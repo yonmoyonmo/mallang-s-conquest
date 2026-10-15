@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://battle/battle.gd" id="1_battle"]
+[ext_resource type="Resource" path="res://battle/data/default_battle_config.tres" id="2_config"]
+[ext_resource type="Script" path="res://battle/rendering/battle_renderer.gd" id="3_renderer"]
+[ext_resource type="Script" path="res://battle/input/battle_input.gd" id="4_input"]
+[ext_resource type="Script" path="res://battle/ai/enemy_touch_ai.gd" id="5_ai"]
+
+[node name="Battle" type="Node2D"]
+script = ExtResource("1_battle")
+config = ExtResource("2_config")
+
+[node name="BattleRenderer" type="Node2D" parent="."]
+script = ExtResource("3_renderer")
+
+[node name="BattleInput" type="Node" parent="."]
+script = ExtResource("4_input")
+
+[node name="EnemyTouchAI" type="Node" parent="."]
+script = ExtResource("5_ai")
