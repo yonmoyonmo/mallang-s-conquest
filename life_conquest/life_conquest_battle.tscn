@@ -1,0 +1,16 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://life_conquest/life_conquest_battle.gd" id="1_battle"]
+[ext_resource type="Resource" path="res://life_conquest/data/default_life_conquest_config.tres" id="2_config"]
+[ext_resource type="Script" path="res://life_conquest/rendering/life_conquest_renderer.gd" id="3_renderer"]
+[ext_resource type="Script" path="res://life_conquest/input/life_conquest_input.gd" id="4_input"]
+
+[node name="LifeConquestBattle" type="Node2D"]
+script = ExtResource("1_battle")
+config = ExtResource("2_config")
+
+[node name="LifeConquestRenderer" type="Node2D" parent="."]
+script = ExtResource("3_renderer")
+
+[node name="LifeConquestInput" type="Node" parent="."]
+script = ExtResource("4_input")

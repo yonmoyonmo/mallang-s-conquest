@@ -18,7 +18,6 @@ var _input_queue: Array[Dictionary] = []
 var _next_lineage_id: int = 1
 var _lineage_last_growth: Dictionary = {}
 var _lineage_warning_tick: Dictionary = {}
-var _lineage_origin: Dictionary = {}
 
 
 func _init(config: BattleConfig, seed: int) -> void:
@@ -50,7 +49,6 @@ func step() -> Array[SimulationEvent]:
 
 	var next_state := base_state.clone()
 	_resolve_spread(base_state, next_state, player_sources, enemy_sources, events)
-	_retire_spread_sources(base_state, next_state, events)
 	_age_and_expire(next_state, events)
 	_update_stagnation(next_state, events)
 	_update_border(next_state, events)
@@ -125,12 +123,10 @@ func _spawn_touch_cell(
 	target_state.faction[index] = spawn_faction
 	target_state.lineage_id[index] = lineage
 	target_state.pattern[index] = BattleState.Pattern.RADIAL
-	target_state.direction[index] = _random_radial_mask()
 	target_state.age[index] = 0
 	target_state.generation[index] = 0
 	target_state.cell_status[index] = BattleState.CellStatus.ACTIVE
 	_lineage_last_growth[lineage] = tick_index
-	_lineage_origin[lineage] = target_state.cell_of(index)
 	events.append(SimulationEvent.new(
 		SimulationEvent.Type.CELL_SPAWNED,
 		target_state.cell_of(index),
@@ -155,14 +151,9 @@ func _collect_spread_intents(
 			continue
 
 		var source_cell := base_state.cell_of(source_index)
-		for direction_index in range(CARDINAL_DIRECTIONS.size()):
-			if (base_state.direction[source_index] & (1 << direction_index)) == 0:
-				continue
-			var offset := CARDINAL_DIRECTIONS[direction_index]
+		for offset in CARDINAL_DIRECTIONS:
 			var target_cell := source_cell + offset
 			if not base_state.is_active_cell(target_cell):
-				continue
-			if not _is_outward_step(base_state, source_index, target_cell):
 				continue
 			var target_index := base_state.index_of(target_cell)
 			if source_faction == BattleState.Faction.PLAYER:
@@ -170,36 +161,6 @@ func _collect_spread_intents(
 					player_sources[target_index] = source_index
 			elif enemy_sources[target_index] == -1:
 				enemy_sources[target_index] = source_index
-
-
-func _random_radial_mask() -> int:
-	var available_directions := [0, 1, 2, 3]
-	var minimum := clampi(_config.radial_min_arms, 1, 4)
-	var maximum := clampi(_config.radial_max_arms, minimum, 4)
-	var arm_count := _rng.randi_range(minimum, maximum)
-	var mask := 0
-	for _arm in range(arm_count):
-		var pick := _rng.randi_range(0, available_directions.size() - 1)
-		var direction_index: int = available_directions.pop_at(pick)
-		mask |= 1 << direction_index
-	return mask
-
-
-func _is_outward_step(
-	base_state: BattleState,
-	source_index: int,
-	target_cell: Vector2i,
-) -> bool:
-	var lineage := base_state.lineage_id[source_index]
-	if not _lineage_origin.has(lineage):
-		return true
-	var origin: Vector2i = _lineage_origin[lineage]
-	var source_cell := base_state.cell_of(source_index)
-	var source_distance := absi(source_cell.x - origin.x) + absi(source_cell.y - origin.y)
-	var target_distance := absi(target_cell.x - origin.x) + absi(target_cell.y - origin.y)
-	return target_distance > source_distance
-
-
 func _resolve_spread(
 	base_state: BattleState,
 	next_state: BattleState,
@@ -246,10 +207,6 @@ func _resolve_spread(
 		))
 
 		if occupant == winner:
-			# A defending front that wins becomes the next generation and keeps moving.
-			next_state.age[target_index] = 0
-			next_state.generation[target_index] = base_state.generation[target_index] + 1
-			next_state.cell_status[target_index] = BattleState.CellStatus.ACTIVE
 			continue
 		var winning_source := player_source
 		if winner == BattleState.Faction.ENEMY:
@@ -307,37 +264,6 @@ func _spawn_from_source(
 		BattleState.Faction.NONE,
 		lineage,
 	))
-
-
-func _retire_spread_sources(
-	base_state: BattleState,
-	next_state: BattleState,
-	events: Array[SimulationEvent],
-) -> void:
-	for index in range(base_state.size):
-		if base_state.faction[index] == BattleState.Faction.NONE:
-			continue
-		if base_state.cell_status[index] != BattleState.CellStatus.ACTIVE:
-			continue
-		if base_state.age[index] != _config.spread_age_ticks:
-			continue
-		# Converted or refreshed collision winners must survive as a new front.
-		if next_state.faction[index] != base_state.faction[index]:
-			continue
-		if next_state.lineage_id[index] != base_state.lineage_id[index]:
-			continue
-		if next_state.age[index] != base_state.age[index]:
-			continue
-		events.append(SimulationEvent.new(
-			SimulationEvent.Type.DEATH_NATURAL,
-			base_state.cell_of(index),
-			base_state.faction[index],
-			BattleState.Faction.NONE,
-			base_state.lineage_id[index],
-		))
-		next_state.clear_cell(index)
-
-
 func _age_and_expire(
 	next_state: BattleState,
 	events: Array[SimulationEvent],
@@ -393,7 +319,6 @@ func _update_stagnation(
 			continue
 		_lineage_last_growth.erase(lineage)
 		_lineage_warning_tick.erase(lineage)
-		_lineage_origin.erase(lineage)
 
 
 func _mark_lineage_collapsing(

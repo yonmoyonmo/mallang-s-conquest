@@ -1,0 +1,177 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://life_conquest/life_conquest_main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://life_conquest/life_conquest_battle.tscn" id="2_battle"]
+
+[node name="LifeConquestMain" type="Node"]
+script = ExtResource("1_main")
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="LifeConquestBattle" parent="World" instance=ExtResource("2_battle")]
+
+[node name="GUI" type="CanvasLayer" parent="."]
+
+[node name="TopBar" type="ColorRect" parent="GUI"]
+offset_right = 540.0
+offset_bottom = 76.0
+mouse_filter = 2
+color = Color(0.035, 0.047, 0.071, 0.96)
+
+[node name="MenuButton" type="Button" parent="GUI/TopBar"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 56.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 24
+text = "‹"
+
+[node name="RoundLabel" type="Label" parent="GUI/TopBar"]
+offset_left = 66.0
+offset_top = 12.0
+offset_right = 180.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0.86, 0.89, 0.96, 1)
+theme_override_font_sizes/font_size = 18
+text = "라운드 1/15"
+
+[node name="EnergyLabel" type="Label" parent="GUI/TopBar"]
+offset_left = 170.0
+offset_top = 14.0
+offset_right = 310.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(1, 0.82, 0.35, 1)
+theme_override_font_sizes/font_size = 17
+text = "말랑력 12"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="GUI/TopBar"]
+offset_left = 300.0
+offset_top = 12.0
+offset_right = 524.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0.95, 0.97, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "나 0  :  0 적"
+horizontal_alignment = 2
+
+[node name="StatusLabel" type="Label" parent="GUI"]
+offset_left = 20.0
+offset_top = 78.0
+offset_right = 520.0
+offset_bottom = 104.0
+theme_override_colors/font_color = Color(0.74, 0.79, 0.88, 1)
+theme_override_font_sizes/font_size = 16
+text = "패턴을 놓을 빈 공간을 터치"
+horizontal_alignment = 1
+
+[node name="Controls" type="HBoxContainer" parent="GUI"]
+offset_left = 12.0
+offset_top = 876.0
+offset_right = 528.0
+offset_bottom = 948.0
+theme_override_constants/separation = 6
+
+[node name="Pattern1" type="Button" parent="GUI/Controls"]
+custom_minimum_size = Vector2(62, 72)
+layout_mode = 2
+toggle_mode = true
+theme_override_font_sizes/font_size = 14
+text = "수비\n2"
+
+[node name="Pattern2" type="Button" parent="GUI/Controls"]
+custom_minimum_size = Vector2(62, 72)
+layout_mode = 2
+toggle_mode = true
+theme_override_font_sizes/font_size = 14
+text = "진동\n3"
+
+[node name="Pattern3" type="Button" parent="GUI/Controls"]
+custom_minimum_size = Vector2(62, 72)
+layout_mode = 2
+toggle_mode = true
+theme_override_font_sizes/font_size = 14
+text = "활공\n4"
+
+[node name="Pattern4" type="Button" parent="GUI/Controls"]
+custom_minimum_size = Vector2(62, 72)
+layout_mode = 2
+toggle_mode = true
+theme_override_font_sizes/font_size = 14
+text = "폭발\n5"
+
+[node name="RotateButton" type="Button" parent="GUI/Controls"]
+custom_minimum_size = Vector2(62, 72)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "↻\n0°"
+
+[node name="UndoButton" type="Button" parent="GUI/Controls"]
+custom_minimum_size = Vector2(62, 72)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "취소"
+disabled = true
+
+[node name="EvolveButton" type="Button" parent="GUI/Controls"]
+custom_minimum_size = Vector2(82, 72)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.97, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.36, 0.882, 0.769, 1)
+theme_override_font_sizes/font_size = 26
+text = "진화"
+
+[node name="ResultOverlay" type="ColorRect" parent="GUI"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035, 0.047, 0.071, 0.86)
+
+[node name="Panel" type="VBoxContainer" parent="GUI/ResultOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -150.0
+offset_right = 220.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 18
+
+[node name="ResultLabel" type="Label" parent="GUI/ResultOverlay/Panel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "정복 성공\n0 : 0"
+horizontal_alignment = 1
+
+[node name="RewardLabel" type="Label" parent="GUI/ResultOverlay/Panel"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "보상"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Actions" type="HBoxContainer" parent="GUI/ResultOverlay/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="RetryButton" type="Button" parent="GUI/ResultOverlay/Panel/Actions"]
+custom_minimum_size = Vector2(170, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "재도전"
+
+[node name="ExitButton" type="Button" parent="GUI/ResultOverlay/Panel/Actions"]
+custom_minimum_size = Vector2(170, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "메인으로"

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="LifeConquestConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://life_conquest/data/life_conquest_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+grid_width = 24
+grid_height = 36
+total_rounds = 15
+generations_per_round = 15
+energy_per_round = 12
+generation_interval = 0.16
+placement_pause = 0.3
+random_seed = 20261015

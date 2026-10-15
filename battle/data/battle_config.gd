@@ -9,8 +9,6 @@ extends Resource
 
 @export_group("Cells")
 @export_range(1, 10, 1) var spread_age_ticks: int = 1
-@export_range(1, 4, 1) var radial_min_arms: int = 2
-@export_range(1, 4, 1) var radial_max_arms: int = 4
 @export_range(2, 120, 1) var cell_lifetime_ticks: int = 18
 @export_range(1, 120, 1) var stagnation_ticks: int = 10
 @export_range(1, 30, 1) var collapse_delay_ticks: int = 3
